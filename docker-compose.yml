@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16                # versión estable
+    container_name: sysacad_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"                   # host:container  (cambia el 1.º si ya ocupas 5432)
+    environment:
+      POSTGRES_USER: sysacad          # ← usuario admin que crea el contenedor
+      POSTGRES_PASSWORD: sysacad      # ← contraseña
+      POSTGRES_DB: sysacad_dev        # ← base que se crea al inicio
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  postgres_data:
